@@ -9,7 +9,7 @@ uses
   FMX.Types3D, FMX.Viewport3D, FMX.Controls3D, FMX.Objects3D, FMX.MaterialSources,
   FMX.Controls.Presentation, FMX.ScrollBox, FMX.Memo, FMX.TabControl,
   LUX,
-  LIB.Aseet;
+  LIB.Asset;
 
 type
   TForm1 = class(TForm)
