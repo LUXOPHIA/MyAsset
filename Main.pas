@@ -8,7 +8,7 @@ uses
   System.Math.Vectors,
   FMX.Types3D, FMX.Viewport3D, FMX.Controls3D, FMX.Objects3D, FMX.MaterialSources,
   FMX.Controls.Presentation, FMX.ScrollBox, FMX.Memo, FMX.TabControl,
-  LUX,
+  LUX,  LUX.FMX,
   LIB.Asset;
 
 type
@@ -26,6 +26,8 @@ type
     MemoV: TMemo;
     MemoP: TMemo;
     Timer1: TTimer;
+    Sphere1: TSphere;
+    TextureMaterialSource1: TTextureMaterialSource;
     procedure FormCreate(Sender: TObject);
     procedure Viewport3D1MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Single);
     procedure Viewport3D1MouseMove(Sender: TObject; Shift: TShiftState; X, Y: Single);
@@ -38,6 +40,7 @@ type
   public
     { public 宣言 }
     _MyAsset :TMyAsset;
+    _Tensors :TTensors;
   end;
 
 var
@@ -57,21 +60,40 @@ procedure TForm1.FormCreate(Sender: TObject);
 begin
      _MouseS := [];
 
+     TextureMaterialSource1.Texture.LoadFromFile( '../../_DATA/EnviImage.png' );
+
      _MyAsset := TMyAsset.Create( Self );
 
      with _MyAsset do
      begin
           Parent  := Viewport3D1;
-          HitTest := False;
-          TwoSide := True;
 
           with Material do
           begin
-               Texture.LoadFromFile( '../../_DATA/Texture.png' );
+               EmisLight := TAlphaColorF.Create( 0, 0, 0 );
+               AmbiLight := TAlphaColorF.Create( 0.1, 0.1, 0.1 );
+               DiffRatio := TAlphaColorF.Create( 1, 1, 1 );
+               SpecRatio := TAlphaColorF.Create( 1, 1, 1 );
+               SpecShiny := 30;
+               TranRatio := TAlphaColorF.Create( 1, 1, 1 );
+               RefrIndex := TAlphaColorF.Create( 2.4, 2.3, 2.2 );
+
+               DiffImage.LoadFromFile( '../../_DATA/DiffImage.png' );
+               NormImage.LoadFromFile( '../../_DATA/NormImage.png' );
+               EnviImage.LoadFromFile( '../../_DATA/EnviImage.png' );
 
                ShaderV.Source.Text := MemoV.Text;
                ShaderP.Source.Text := MemoP.Text;
           end;
+     end;
+
+     _Tensors := TTensors.Create( Self );
+
+     with _Tensors do
+     begin
+          Parent   := _MyAsset;
+          MeshData := _MyAsset.Geometry;
+          Visible  := False;                                                    {テンソルを非表示}
      end;
 end;
 
