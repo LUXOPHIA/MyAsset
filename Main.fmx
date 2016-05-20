@@ -187,8 +187,7 @@ object Form1: TForm1
           ''
           
             '//##############################################################' +
-            '################'
-          '')
+            '################')
         StyledSettings = [Size, FontColor]
         TextSettings.Font.Family = #65325#65331' '#12468#12471#12483#12463
         Align = Client
@@ -395,8 +394,12 @@ object Form1: TForm1
             '----------------'
           ''
           
-            '    float4 NM = _NormImage.Sample( _SamplerState, _Sender.Tex.xy' +
+            '    float4 NP = _NormImage.Sample( _SamplerState, _Sender.Tex.xy' +
             ' );             //'#27861#32218#12510#12483#12503#33394
+          ''
+          '    N = normalize( ( NP.r - 0.5 ) * 2 * T'
+          '                 + ( NP.g - 0.5 ) * 2 * B'
+          '                 +   NP.b             * N );'
           ''
           
             '    //----------------------------------------------------------' +
@@ -407,12 +410,12 @@ object Form1: TForm1
             '                //'#20809#32218#25313#25955#21453#23556#29575
           ''
           
-            '    float4 DM = _DiffImage.Sample( _SamplerState, _Sender.Tex.xy' +
+            '    float4 DP = _DiffImage.Sample( _SamplerState, _Sender.Tex.xy' +
             ' );             //'#25313#25955#21453#23556#29575#12510#12483#12503#33394
           ''
           
             '    float4 CD = ( _AmbiLight + _Light.Col * D ) * ( _DiffRatio *' +
-            ' DM );          //'#25313#25955#21453#23556#20809
+            ' DP );          //'#25313#25955#21453#23556#20809
           ''
           
             '    //----------------------------------------------------------' +
@@ -466,6 +469,8 @@ object Form1: TForm1
             '    float4 F = Fresnel4( V, N, _RefrIndex );                    ' +
             '                //'#35222#32218#37857#38754#21453#23556#29575
           ''
+          '    F = clamp( F, 0, 1 );'
+          ''
           '    _Result.Col = ( CO - CI ) * F + CI;'
           ''
           
@@ -482,8 +487,6 @@ object Form1: TForm1
           
             '//##############################################################' +
             '################'
-          ''
-          ''
           '')
         StyledSettings = [Size, Style, FontColor]
         TextSettings.Font.Family = #65325#65331' '#12468#12471#12483#12463
