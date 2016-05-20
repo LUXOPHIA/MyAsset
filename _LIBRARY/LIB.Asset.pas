@@ -17,17 +17,17 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TMyMaterial = class( TLuxMaterial )
      private
      protected
-       _FMatrixMVP :TShaderVarMatrix;
-       _FMatrixMV  :TShaderVarMatrix;
-       _TIMatrixMV :TShaderVarMatrix;
+       _FMatrixMVP :TShaderVarMatrix3D;
+       _FMatrixMV  :TShaderVarMatrix3D;
+       _TIMatrixMV :TShaderVarMatrix3D;
        _Light      :TShaderVarLight;
-       _EyePos     :TShaderVarVector;
-       _Opacity    :TShaderVarFloat;
+       _EyePos     :TShaderVarVector3D;
+       _Opacity    :TShaderVarSingle;
        _EmisLight  :TShaderVarColorF;
        _AmbiLight  :TShaderVarColorF;
        _DiffRatio  :TShaderVarColorF;
        _SpecRatio  :TShaderVarColorF;
-       _SpecShiny  :TShaderVarFloat;
+       _SpecShiny  :TShaderVarSingle;
        _TranRatio  :TShaderVarColorF;
        _RefrIndex  :TShaderVarColorF;
        _DiffImage  :TShaderVarTexture;
@@ -43,7 +43,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property AmbiLight :TShaderVarColorF  read _AmbiLight;
        property DiffRatio :TShaderVarColorF  read _DiffRatio;
        property SpecRatio :TShaderVarColorF  read _SpecRatio;
-       property SpecShiny :TShaderVarFloat   read _SpecShiny;
+       property SpecShiny :TShaderVarSingle  read _SpecShiny;
        property TranRatio :TShaderVarColorF  read _TranRatio;
        property RefrIndex :TShaderVarColorF  read _RefrIndex;
        property DiffImage :TShaderVarTexture read _DiffImage;
@@ -183,22 +183,22 @@ constructor TMyMaterial.Create;
 begin
      inherited;
 
-     _FMatrixMVP := TShaderVarMatrix .Create( 'FMatrixMVP'  );
-     _FMatrixMV  := TShaderVarMatrix .Create( 'FMatrixMV'   );
-     _TIMatrixMV := TShaderVarMatrix .Create( 'IMatrixMV'   );
-     _EyePos     := TShaderVarVector .Create( '_EyePos'     );
-     _Opacity    := TShaderVarFloat  .Create( '_Opacity'    );
-     _EmisLight  := TShaderVarColorF .Create( '_EmisLight'  );
-     _AmbiLight  := TShaderVarColorF .Create( '_AmbiLight'  );
-     _DiffRatio  := TShaderVarColorF .Create( '_DiffRatio'  );
-     _SpecRatio  := TShaderVarColorF .Create( '_SpecRatio'  );
-     _SpecShiny  := TShaderVarFloat  .Create( '_SpecShiny'  );
-     _Light      := TShaderVarLight  .Create( '_Light'      );
-     _DiffImage  := TShaderVarTexture.Create( '_DiffImage'  );
-     _NormImage  := TShaderVarTexture.Create( '_NormImage'  );
-     _EnviImage  := TShaderVarTexture.Create( '_EnviImage'  );
-     _TranRatio  := TShaderVarColorF .Create( '_TranRatio'  );
-     _RefrIndex  := TShaderVarColorF .Create( '_RefrIndex'  );
+     _FMatrixMVP := TShaderVarMatrix3D.Create( 'FMatrixMVP'  );
+     _FMatrixMV  := TShaderVarMatrix3D.Create( 'FMatrixMV'   );
+     _TIMatrixMV := TShaderVarMatrix3D.Create( 'IMatrixMV'   );
+     _EyePos     := TShaderVarVector3D.Create( '_EyePos'     );
+     _Opacity    := TShaderVarSingle  .Create( '_Opacity'    );
+     _EmisLight  := TShaderVarColorF  .Create( '_EmisLight'  );
+     _AmbiLight  := TShaderVarColorF  .Create( '_AmbiLight'  );
+     _DiffRatio  := TShaderVarColorF  .Create( '_DiffRatio'  );
+     _SpecRatio  := TShaderVarColorF  .Create( '_SpecRatio'  );
+     _SpecShiny  := TShaderVarSingle  .Create( '_SpecShiny'  );
+     _Light      := TShaderVarLight   .Create( '_Light'      );
+     _DiffImage  := TShaderVarTexture .Create( '_DiffImage'  );
+     _NormImage  := TShaderVarTexture .Create( '_NormImage'  );
+     _EnviImage  := TShaderVarTexture .Create( '_EnviImage'  );
+     _TranRatio  := TShaderVarColorF  .Create( '_TranRatio'  );
+     _RefrIndex  := TShaderVarColorF  .Create( '_RefrIndex'  );
 
      _ShaderV.Vars := [ _FMatrixMVP,
                         _FMatrixMV ,
