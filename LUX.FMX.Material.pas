@@ -2,9 +2,9 @@
 
 interface //#################################################################### ■
 
-uses FMX.Types3D, System.Classes, System.UITypes, System.Generics.Collections,
+uses System.Classes, System.UITypes, System.Generics.Collections,
      System.Types, System.Math.Vectors,
-     FMX.MaterialSources,
+     FMX.Types3D, FMX.MaterialSources,
      Winapi.D3DCommon, Winapi.D3D11Shader, Winapi.D3DCompiler,
      LUX;
 
@@ -13,12 +13,13 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      TShaderVar                   = class;
        TShaderVar<_TValue_>       = class;
          TShaderVarPrim<_TValue_> = class;
-           TShaderVarFloat        = class;
-           TShaderVarFloat2       = class;
-           TShaderVarFloat3       = class;
-           TShaderVarVector       = class;
+           TShaderVarSingle       = class;
+           TShaderVarPointF       = class;
+           TShaderVarPoint3D      = class;
+           TShaderVarVector3D     = class;
            TShaderVarColor        = class;
-           TShaderVarMatrix       = class;
+           TShaderVarColorF       = class;
+           TShaderVarMatrix3D     = class;
            TShaderVarTexture      = class;
          TShaderVarLight          = class;
      TShaderSource                = class;
@@ -49,9 +50,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        property Name :String  read   _Name write _Name;
        property Size :Integer read GetSize            ;
        ///// メソッド
-       function GetVars( var I_:Integer; const U_:Byte ) :TContextShaderVariables; virtual; abstract;
+       function GetVars( var I_,T_:Integer; const U_:Byte ) :TContextShaderVariables; virtual; abstract;
        procedure SendVar( const Context_:TContext3D ); virtual; abstract;
-       function GetSource( var I_:Integer ) :String; virtual; abstract;
+       function GetSource( var C_:Integer; var T_:Integer ) :String; virtual; abstract;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TShaderVar<_TValue_>
@@ -78,12 +79,12 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        ///// プロパティ
        property Kind :TContextShaderVariableKind read GetKind;
        ///// メソッド
-       function GetVars( var I_:Integer; const U_:Byte ) :TContextShaderVariables; override;
+       function GetVars( var I_,T_:Integer; const U_:Byte ) :TContextShaderVariables; override;
      end;
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TShaderVarFloat
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TShaderVarSingle
 
-     TShaderVarFloat = class( TShaderVarPrim<Single> )
+     TShaderVarSingle = class( TShaderVarPrim<Single> )
      private
      protected
        ///// アクセス
@@ -92,12 +93,12 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      public
        ///// メソッド
        procedure SendVar( const Context_:TContext3D ); override;
-       function GetSource( var I_:Integer ) :String; override;
+       function GetSource( var C_:Integer; var T_:Integer ) :String; override;
      end;
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TShaderVarFloat2
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TShaderVarPointF
 
-     TShaderVarFloat2 = class( TShaderVarPrim<TPointF> )
+     TShaderVarPointF = class( TShaderVarPrim<TPointF> )
      private
      protected
        ///// アクセス
@@ -106,12 +107,12 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      public
        ///// メソッド
        procedure SendVar( const Context_:TContext3D ); override;
-       function GetSource( var I_:Integer ) :String; override;
+       function GetSource( var C_:Integer; var T_:Integer ) :String; override;
      end;
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TShaderVarFloat3
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TShaderVarPoint3D
 
-     TShaderVarFloat3 = class( TShaderVarPrim<TPoint3D> )
+     TShaderVarPoint3D = class( TShaderVarPrim<TPoint3D> )
      private
      protected
        ///// アクセス
@@ -120,12 +121,12 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      public
        ///// メソッド
        procedure SendVar( const Context_:TContext3D ); override;
-       function GetSource( var I_:Integer ) :String; override;
+       function GetSource( var C_:Integer; var T_:Integer ) :String; override;
      end;
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TShaderVarVector
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TShaderVarVector3D
 
-     TShaderVarVector = class( TShaderVarPrim<TVector3D> )
+     TShaderVarVector3D = class( TShaderVarPrim<TVector3D> )
      private
      protected
        ///// アクセス
@@ -134,7 +135,7 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      public
        ///// メソッド
        procedure SendVar( const Context_:TContext3D ); override;
-       function GetSource( var I_:Integer ) :String; override;
+       function GetSource( var C_:Integer; var T_:Integer ) :String; override;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TShaderVarColor
@@ -148,12 +149,12 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      public
        ///// メソッド
        procedure SendVar( const Context_:TContext3D ); override;
-       function GetSource( var I_:Integer ) :String; override;
+       function GetSource( var C_:Integer; var T_:Integer ) :String; override;
      end;
 
-     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TShaderVarMatrix
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TShaderVarColorF
 
-     TShaderVarMatrix = class( TShaderVarPrim<TMatrix3D> )
+     TShaderVarColorF = class( TShaderVarPrim<TAlphaColorF> )
      private
      protected
        ///// アクセス
@@ -162,7 +163,21 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      public
        ///// メソッド
        procedure SendVar( const Context_:TContext3D ); override;
-       function GetSource( var I_:Integer ) :String; override;
+       function GetSource( var C_:Integer; var T_:Integer ) :String; override;
+     end;
+
+     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TShaderVarMatrix3D
+
+     TShaderVarMatrix3D = class( TShaderVarPrim<TMatrix3D> )
+     private
+     protected
+       ///// アクセス
+       function GetKind :TContextShaderVariableKind; override;
+       function GetSize :Integer; override;
+     public
+       ///// メソッド
+       procedure SendVar( const Context_:TContext3D ); override;
+       function GetSource( var C_:Integer; var T_:Integer ) :String; override;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TShaderVarTexture
@@ -176,17 +191,17 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
      public
        ///// メソッド
        procedure SendVar( const Context_:TContext3D ); override;
-       function GetVars( var I_:Integer; const U_:Byte ) :TContextShaderVariables; override;
-       function GetSource( var I_:Integer ) :String; override;
+       function GetVars( var I_,T_:Integer; const U_:Byte ) :TContextShaderVariables; override;
+       function GetSource( var C_:Integer; var T_:Integer ) :String; override;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TShaderVarLight
 
      TShaderVarLight = class( TShaderVar<TLightDescription> )
      private
-       _Opt :TShaderVarFloat3;
-       _Pos :TShaderVarFloat3;
-       _Dir :TShaderVarFloat3;
+       _Opt :TShaderVarPoint3D;
+       _Pos :TShaderVarPoint3D;
+       _Dir :TShaderVarPoint3D;
        _Col :TShaderVarColor;
      protected
        ///// アクセス
@@ -196,9 +211,9 @@ type //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
        constructor Create( const Name_:String );
        destructor Destroy; override;
        ///// メソッド
-       function GetVars( var I_:Integer; const U_:Byte ) :TContextShaderVariables; override;
+       function GetVars( var I_,T_:Integer; const U_:Byte ) :TContextShaderVariables; override;
        procedure SendVar( const Context_:TContext3D ); override;
-       function GetSource( var I_:Integer ) :String; override;
+       function GetSource( var C_:Integer; var T_:Integer ) :String; override;
      end;
 
      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TShaderSource
@@ -359,14 +374,14 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-function TShaderVarPrim<_TValue_>.GetVars( var I_:Integer; const U_:Byte ) :TContextShaderVariables;
+function TShaderVarPrim<_TValue_>.GetVars( var I_,T_:Integer; const U_:Byte ) :TContextShaderVariables;
 begin
      Result := [ TContextShaderVariable.Create( Name, Kind, I_, U_ * Size ) ];
 
      Inc( I_, Size * U_ );
 end;
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TShaderVarFloat
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TShaderVarSingle
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -374,12 +389,12 @@ end;
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-function TShaderVarFloat.GetKind :TContextShaderVariableKind;
+function TShaderVarSingle.GetKind :TContextShaderVariableKind;
 begin
      Result := TContextShaderVariableKind.Float;
 end;
 
-function TShaderVarFloat.GetSize :Integer;
+function TShaderVarSingle.GetSize :Integer;
 begin
      Result := 1;
 end;
@@ -388,19 +403,19 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TShaderVarFloat.SendVar( const Context_:TContext3D );
+procedure TShaderVarSingle.SendVar( const Context_:TContext3D );
 begin
      Context_.SetShaderVariable( _Name, [ TVector3D.Create( _Value, 0, 0, 0 ) ] );
 end;
 
-function TShaderVarFloat.GetSource(  var I_:Integer ) :String;
+function TShaderVarSingle.GetSource( var C_:Integer; var T_:Integer ) :String;
 begin
-     Result := 'float ' + _Name + ' : register( c' + I_.ToString + ' );' + CRLF;
+     Result := 'float ' + _Name + ' : register( c' + c_.ToString + ' );' + CRLF;
 
-     Inc( I_, Size );
+     Inc( c_, Size );
 end;
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TShaderVarFloat2
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TShaderVarPointF
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -408,12 +423,12 @@ end;
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-function TShaderVarFloat2.GetKind :TContextShaderVariableKind;
+function TShaderVarPointF.GetKind :TContextShaderVariableKind;
 begin
      Result := TContextShaderVariableKind.Float2;
 end;
 
-function TShaderVarFloat2.GetSize :Integer;
+function TShaderVarPointF.GetSize :Integer;
 begin
      Result := 1;
 end;
@@ -422,19 +437,19 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TShaderVarFloat2.SendVar( const Context_:TContext3D );
+procedure TShaderVarPointF.SendVar( const Context_:TContext3D );
 begin
      Context_.SetShaderVariable( _Name, [ TVector3D.Create( _Value.X, _Value.Y, 0, 0 ) ] );
 end;
 
-function TShaderVarFloat2.GetSource(  var I_:Integer ) :String;
+function TShaderVarPointF.GetSource( var C_:Integer; var T_:Integer ) :String;
 begin
-     Result := 'float2 ' + _Name + ' : register( c' + I_.ToString + ' );' + CRLF;
+     Result := 'float2 ' + _Name + ' : register( c' + c_.ToString + ' );' + CRLF;
 
-     Inc( I_, Size );
+     Inc( c_, Size );
 end;
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TShaderVarFloat3
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TShaderVarPoint3D
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -442,12 +457,12 @@ end;
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-function TShaderVarFloat3.GetKind :TContextShaderVariableKind;
+function TShaderVarPoint3D.GetKind :TContextShaderVariableKind;
 begin
      Result := TContextShaderVariableKind.Float3;
 end;
 
-function TShaderVarFloat3.GetSize :Integer;
+function TShaderVarPoint3D.GetSize :Integer;
 begin
      Result := 1;
 end;
@@ -456,19 +471,19 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TShaderVarFloat3.SendVar( const Context_:TContext3D );
+procedure TShaderVarPoint3D.SendVar( const Context_:TContext3D );
 begin
      Context_.SetShaderVariable( _Name, [ TVector3D.Create( _Value.X, _Value.Y, _Value.Z, 0 ) ] );
 end;
 
-function TShaderVarFloat3.GetSource(  var I_:Integer ) :String;
+function TShaderVarPoint3D.GetSource( var C_:Integer; var T_:Integer ) :String;
 begin
-     Result := 'float3 ' + _Name + ' : register( c' + I_.ToString + ' );' + CRLF;
+     Result := 'float3 ' + _Name + ' : register( c' + c_.ToString + ' );' + CRLF;
 
-     Inc( I_, Size );
+     Inc( c_, Size );
 end;
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TShaderVarVector
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TShaderVarVector3D
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -476,12 +491,12 @@ end;
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-function TShaderVarVector.GetKind :TContextShaderVariableKind;
+function TShaderVarVector3D.GetKind :TContextShaderVariableKind;
 begin
      Result := TContextShaderVariableKind.Vector;
 end;
 
-function TShaderVarVector.GetSize :Integer;
+function TShaderVarVector3D.GetSize :Integer;
 begin
      Result := 1;
 end;
@@ -490,16 +505,16 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TShaderVarVector.SendVar( const Context_:TContext3D );
+procedure TShaderVarVector3D.SendVar( const Context_:TContext3D );
 begin
      Context_.SetShaderVariable( _Name, _Value );
 end;
 
-function TShaderVarVector.GetSource(  var I_:Integer ) :String;
+function TShaderVarVector3D.GetSource( var C_:Integer; var T_:Integer ) :String;
 begin
-     Result := 'float4 ' + _Name + ' : register( c' + I_.ToString + ' );' + CRLF;
+     Result := 'float4 ' + _Name + ' : register( c' + c_.ToString + ' );' + CRLF;
 
-     Inc( I_, Size );
+     Inc( c_, Size );
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TShaderVarColor
@@ -529,14 +544,14 @@ begin
      Context_.SetShaderVariable( _Name, _Value );
 end;
 
-function TShaderVarColor.GetSource(  var I_:Integer ) :String;
+function TShaderVarColor.GetSource( var C_:Integer; var T_:Integer ) :String;
 begin
-     Result := 'float4 ' + _Name + ' : register( c' + I_.ToString + ' );' + CRLF;
+     Result := 'float4 ' + _Name + ' : register( c' + c_.ToString + ' );' + CRLF;
 
-     Inc( I_, Size );
+     Inc( c_, Size );
 end;
 
-//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TShaderVarMatrix
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TShaderVarColorF
 
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
 
@@ -544,12 +559,46 @@ end;
 
 /////////////////////////////////////////////////////////////////////// アクセス
 
-function TShaderVarMatrix.GetKind :TContextShaderVariableKind;
+function TShaderVarColorF.GetKind :TContextShaderVariableKind;
+begin
+     Result := TContextShaderVariableKind.Vector;
+end;
+
+function TShaderVarColorF.GetSize :Integer;
+begin
+     Result := 1;
+end;
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& public
+
+/////////////////////////////////////////////////////////////////////// メソッド
+
+procedure TShaderVarColorF.SendVar( const Context_:TContext3D );
+begin
+     with _Value do Context_.SetShaderVariable( _Name, TVector3D.Create( R, G, B, A ) );
+end;
+
+function TShaderVarColorF.GetSource( var C_:Integer; var T_:Integer ) :String;
+begin
+     Result := 'float4 ' + _Name + ' : register( c' + c_.ToString + ' );' + CRLF;
+
+     Inc( c_, Size );
+end;
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TShaderVarMatrix3D
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& private
+
+//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& protected
+
+/////////////////////////////////////////////////////////////////////// アクセス
+
+function TShaderVarMatrix3D.GetKind :TContextShaderVariableKind;
 begin
      Result := TContextShaderVariableKind.Matrix;
 end;
 
-function TShaderVarMatrix.GetSize :Integer;
+function TShaderVarMatrix3D.GetSize :Integer;
 begin
      Result := 4;
 end;
@@ -558,16 +607,16 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-procedure TShaderVarMatrix.SendVar( const Context_:TContext3D );
+procedure TShaderVarMatrix3D.SendVar( const Context_:TContext3D );
 begin
      Context_.SetShaderVariable( _Name, _Value );
 end;
 
-function TShaderVarMatrix.GetSource(  var I_:Integer ) :String;
+function TShaderVarMatrix3D.GetSource( var C_:Integer; var T_:Integer ) :String;
 begin
-     Result := 'float4x4 ' + _Name + ' : register( c' + I_.ToString + ' );' + CRLF;
+     Result := 'float4x4 ' + _Name + ' : register( c' + c_.ToString + ' );' + CRLF;
 
-     Inc( I_, Size );
+     Inc( c_, Size );
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TShaderVarTexture
@@ -592,9 +641,11 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-function TShaderVarTexture.GetVars( var I_:Integer; const U_:Byte ) :TContextShaderVariables;
+function TShaderVarTexture.GetVars( var I_,T_:Integer; const U_:Byte ) :TContextShaderVariables;
 begin
-     Result := [ TContextShaderVariable.Create( Name, Kind, 0, 0 ) ];
+     Result := [ TContextShaderVariable.Create( Name, Kind, T_, U_ * Size ) ];
+
+     Inc( T_, 1 );
 end;
 
 procedure TShaderVarTexture.SendVar( const Context_:TContext3D );
@@ -602,11 +653,11 @@ begin
      Context_.SetShaderVariable( _Name, _Value );
 end;
 
-function TShaderVarTexture.GetSource(  var I_:Integer ) :String;
+function TShaderVarTexture.GetSource( var C_:Integer; var T_:Integer ) :String;
 begin
-     Result := 'Texture2D<float4> ' + _Name + ' : register( t0 );' + CRLF;
+     Result := 'Texture2D<float4> ' + _Name + ' : register( t' + t_.ToString + ' );' + CRLF;
 
-     Inc( I_, Size );
+     Inc( t_, 1 );
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TShaderVarLight
@@ -646,10 +697,10 @@ constructor TShaderVarLight.Create( const Name_:String );
 begin
      inherited;
 
-     _Opt := TShaderVarFloat3.Create( _Name + '.Opt' );
-     _Pos := TShaderVarFloat3.Create( _Name + '.Pos' );
-     _Dir := TShaderVarFloat3.Create( _Name + '.Dir' );
-     _Col := TShaderVarColor .Create( _Name + '.Col' );
+     _Opt := TShaderVarPoint3D.Create( _Name + '.Opt' );
+     _Pos := TShaderVarPoint3D.Create( _Name + '.Pos' );
+     _Dir := TShaderVarPoint3D.Create( _Name + '.Dir' );
+     _Col := TShaderVarColor  .Create( _Name + '.Col' );
 end;
 
 destructor TShaderVarLight.Destroy;
@@ -662,12 +713,12 @@ end;
 
 /////////////////////////////////////////////////////////////////////// メソッド
 
-function TShaderVarLight.GetVars( var I_:Integer; const U_:Byte ) :TContextShaderVariables;
+function TShaderVarLight.GetVars( var I_,T_:Integer; const U_:Byte ) :TContextShaderVariables;
 begin
-     Result := _Opt.GetVars( I_, U_ )
-             + _Pos.GetVars( I_, U_ )
-             + _Dir.GetVars( I_, U_ )
-             + _Col.GetVars( I_, U_ );
+     Result := _Opt.GetVars( I_, T_, U_ )
+             + _Pos.GetVars( I_, T_, U_ )
+             + _Dir.GetVars( I_, T_, U_ )
+             + _Col.GetVars( I_, T_, U_ );
 end;
 
 procedure TShaderVarLight.SendVar( const Context_:TContext3D );
@@ -678,7 +729,7 @@ begin
      _Col.SendVar( Context_ );
 end;
 
-function TShaderVarLight.GetSource(  var I_:Integer ) :String;
+function TShaderVarLight.GetSource( var C_:Integer; var T_:Integer ) :String;
 begin
      Result := 'struct TLight'                                               + CRLF
              + '{'                                                           + CRLF
@@ -687,9 +738,9 @@ begin
              + '    float3 Dir;'                                             + CRLF
              + '    float4 Col;'                                             + CRLF
              + '};'                                                          + CRLF
-             + 'TLight ' + _Name + ' : register( c' + I_.ToString + ' );' + CRLF;
+             + 'TLight ' + _Name + ' : register( c' + c_.ToString + ' );' + CRLF;
 
-     Inc( I_, Size );
+     Inc( c_, Size );
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TShaderSource
@@ -764,11 +815,11 @@ end;
 function TShaderSource.GetVars( const A_:TContextShaderArch ) :TContextShaderVariables;
 var
    V :TShaderVar;
-   I :Integer;
+   C, T :Integer;
 begin
-     Result := [];  I := 0;
+     Result := [];  C := 0;  T := 0;
 
-     for V in _Vars do Result := Result + V.GetVars( I, VARUNIT[ A_ ] );
+     for V in _Vars do Result := Result + V.GetVars( C, T, VARUNIT[ A_ ] );
 end;
 
 procedure TShaderSource.Compile;
@@ -831,11 +882,11 @@ end;
 function TShaderSource.GetSources :String;
 var
    V :TShaderVar;
-   I :Integer;
+   C, T :Integer;
 begin
-     Result := '';  I := 0;
+     Result := '';  C := 0;  T := 0;
 
-     for V in _Vars do Result := Result + V.GetSource( I );
+     for V in _Vars do Result := Result + V.GetSource( C, T );
 end;
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TShaderSourceV
