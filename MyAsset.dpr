@@ -7,7 +7,8 @@ uses
   LIB.Asset in '_LIBRARY\LIB.Asset.pas',
   LUX.FMX.Material in '_LIBRARY\LUXOPHIA\LUX.FMX\LUX.FMX.Material.pas',
   LUX.FMX in '_LIBRARY\LUXOPHIA\LUX.FMX\LUX.FMX.pas',
-  LUX.D3 in '_LIBRARY\LUXOPHIA\LUX\LUX.D3.pas';
+  LUX.D3 in '_LIBRARY\LUXOPHIA\LUX\LUX.D3.pas',
+  LUX.D1 in '_LIBRARY\LUXOPHIA\LUX\LUX.D1.pas';
 
 {$R *.res}
 
