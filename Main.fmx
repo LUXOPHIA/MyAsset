@@ -128,10 +128,6 @@ object Form1: TForm1
         Touch.InteractiveGestures = [Pan, LongTap, DoubleTap]
         DataDetectorTypes = []
         Lines.Strings = (
-          'static float4x4 _FMatrixMVP = transpose( FMatrixMVP );'
-          'static float4x4 _FMatrixMV  = transpose( FMatrixMV  );'
-          'static float4x4 _IMatrixMV  = transpose( IMatrixMV  );'
-          ''
           
             '//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$' +
             '$$$$$$$$$$$$$$$$'#12304#23450#25968#12305
@@ -187,7 +183,8 @@ object Form1: TForm1
           ''
           
             '//##############################################################' +
-            '################')
+            '################'
+          '')
         StyledSettings = [Size, FontColor]
         TextSettings.Font.Family = #65325#65331' '#12468#12471#12483#12463
         Align = Client
@@ -220,10 +217,6 @@ object Form1: TForm1
         Touch.InteractiveGestures = [Pan, LongTap, DoubleTap]
         DataDetectorTypes = []
         Lines.Strings = (
-          'static float4x4 _FMatrixMVP = transpose( FMatrixMVP );'
-          'static float4x4 _FMatrixMV  = transpose( FMatrixMV  );'
-          'static float4x4 _IMatrixMV  = transpose( IMatrixMV  );'
-          ''
           
             '//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$' +
             '$$$$$$$$$$$$$$$$'#12304#22411#12305
