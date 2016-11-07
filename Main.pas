@@ -40,7 +40,7 @@ type
   public
     { public 宣言 }
     _MyAsset :TMyAsset;
-    _Tensors :TTensors;
+    _Tensors :TTensorShape;
   end;
 
 var
@@ -87,7 +87,7 @@ begin
           end;
      end;
 
-     _Tensors := TTensors.Create( Self );
+     _Tensors := TTensorShape.Create( Self );
 
      with _Tensors do
      begin
