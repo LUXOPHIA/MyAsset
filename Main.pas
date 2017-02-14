@@ -72,9 +72,12 @@ var
 begin
      _MouseS := [];
 
-     TextureMaterialSource1.Texture.LoadFromFile( '../../_DATA/EnviImage.png' );
+     TextureMaterialSource1.Texture.LoadFromFile( '..\..\_DATA\EnviImage.png' );
 
      _MyAsset := TMyAsset.Create( Self );
+
+     MemoSVC.Lines.LoadFromFile( '..\..\_DATA\ShaderV.hlsl' );
+     MemoSPC.Lines.LoadFromFile( '..\..\_DATA\ShaderP.hlsl' );
 
      with _MyAsset do
      begin
@@ -90,9 +93,9 @@ begin
                TranRatio := TAlphaColorF.Create( 1, 1, 1 );
                RefrIndex := TAlphaColorF.Create( 2.4, 2.3, 2.2 );
 
-               DiffImage.LoadFromFile( '../../_DATA/DiffImage.png' );
-               NormImage.LoadFromFile( '../../_DATA/NormImage.png' );
-               EnviImage.LoadFromFile( '../../_DATA/EnviImage.png' );
+               DiffImage.LoadFromFile( '..\..\_DATA\DiffImage.png' );
+               NormImage.LoadFromFile( '..\..\_DATA\NormImage.png' );
+               EnviImage.LoadFromFile( '..\..\_DATA\EnviImage.png' );
 
                with ShaderV do
                begin
